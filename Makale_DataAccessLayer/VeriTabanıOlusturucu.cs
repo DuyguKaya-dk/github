@@ -12,24 +12,21 @@ namespace Makale_DataAccessLayer
     {
         protected override void Seed(DatabaseContext context)
         {
-
             Kullanici admin = new Kullanici()
             {
-                Ad = "Gökçe",
-                Soyad = "Ünlü",
-                Email = "gokceunlu.2@gmail.com",
-                Sifre = "0207",
+                Ad = "Duygu",
+                Soyad = "Kaya",
+                Email = "duygukaya@gmail.com",
+                Sifre = "123",
                 Aktif = true,
                 Admin = true,
                 AktifGuid = Guid.NewGuid(),
-                KullaniciAdi = "gokceunlu",
+                KullaniciAdi = "duygukaya",
                 KayitTarihi = DateTime.Now,
                 DegistirmeTarihi = DateTime.Now.AddMinutes(5),
-                DegistirenKullanici = "gokceunlu"   //kullanıcı adıyla aynı
+                DegistirenKullanici = "duygukaya"   //kullanıcı adıyla aynı
             };
-
             context.Kullanicilar.Add(admin);
-
             for (int i = 0; i < 6; i++)
             {
                 Kullanici user = new Kullanici()
@@ -49,9 +46,7 @@ namespace Makale_DataAccessLayer
 
                 context.Kullanicilar.Add(user);
             }
-
             context.SaveChanges();
-
             List<Kullanici> kullanicilistesi=context.Kullanicilar.ToList();
 
             //FAKE KATEGORİ EKLEME
@@ -64,7 +59,7 @@ namespace Makale_DataAccessLayer
                     Aciklama = FakeData.PlaceData.GetAddress(),
                     KayitTarihi = DateTime.Now,
                     DegistirmeTarihi=DateTime.Now,
-                    DegistirenKullanici = "elif"
+                    DegistirenKullanici = "duygu"
                 };
                 context.Kategoriler.Add(kat);
 
@@ -118,7 +113,6 @@ namespace Makale_DataAccessLayer
 
             }//kategori for
             context.SaveChanges();
-
         }
     }
 }

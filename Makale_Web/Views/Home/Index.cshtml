@@ -67,22 +67,15 @@
                                 <h6 class="text-right">
                                     <span class="glyphicon glyphicon-user text-success"></span><b><span style="color:rebeccapurple"> @item.Kullanici.KullaniciAdi</span></b><br />
                                     <span class="glyphicon glyphicon-time">@item.DegistirmeTarihi.ToString("dd.MM.yy HH:mm")</span><br />
-
                                 </h6>
-
-
-                                @if (!string.IsNullOrEmpty(item.Text) && item.Text.Length > 125)
+                                @if (!string.IsNullOrEmpty(item.Text) && item.Text.Length > 100)
                                 {
-                                    <p>@item.Text.Substring(0, 125)<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-book" style="color:deeppink"></span>Devamı...</a></p>
-
+                                    <p>@item.Text.Substring(0, 100)<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-book" style="color:deeppink"></span>Devamı...</a></p>
                                 }
                                 else
                                 {
                                     <p>@item.Text</p>
                                 }
-
-
-
                             </div>
                             <hr />
                             <div class="ratings">
