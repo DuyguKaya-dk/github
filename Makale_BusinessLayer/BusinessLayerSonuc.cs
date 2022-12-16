@@ -11,7 +11,7 @@ namespace Makale_BusinessLayer
         public List<string> Hatalar { get; set; }
         public T nesne { get; set; }
         public BusinessLayerSonuc()
-        {
+        {     
             Hatalar = new List<string>();
         }
     }
