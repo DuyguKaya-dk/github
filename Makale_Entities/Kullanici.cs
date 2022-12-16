@@ -19,7 +19,7 @@ namespace Makale_Entities
         public string Soyad { get; set; }
 
         [Required, StringLength(20)]
-        public string KullaniciAdi { get; set; }
+        public string KullaniciAdi { get; set; } 
 
         [Required, StringLength(50)]
         public string Email { get; set; }
