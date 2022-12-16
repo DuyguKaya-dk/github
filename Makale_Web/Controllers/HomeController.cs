@@ -14,6 +14,8 @@ namespace Makale_Web.Controllers
         // GET: Home
         //
         NotYonet ny = new NotYonet();
+        KullaniciYonet ky = new KullaniciYonet();
+
         public ActionResult Index()
         {
             //  Test test1=new Test(); 
@@ -62,15 +64,47 @@ namespace Makale_Web.Controllers
         [HttpPost]
         public ActionResult Login(LoginModel model)
         {
+            if (ModelState.IsValid)
+            {
+                BusinessLayerSonuc<Kullanici> sonuc = ky.LoginKontrol(model);
+                if (sonuc.Hatalar.Count>0)
+                {
+                    sonuc.Hatalar.ForEach(x => ModelState.AddModelError("", x));
+                    return View(model);
+                }
+                Session["login"] = sonuc.nesne; //Session da login kullanıcı bilgileri tutuldu.
+                RedirectToAction("Index"); //Login olduğu için indexe yönlendirildi.
+            }
             return View(model);
         }
         public ActionResult KayitOl()
         {
             return View();
         }
+        public ActionResult UserActivate(Guid aktifguid)
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult KayitOl(KayitModel model)
         {
+            if(ModelState.IsValid)
+            {
+            
+               BusinessLayerSonuc<Kullanici> sonuc= ky.Kaydet(model);
+                if (sonuc.Hatalar.Count>0)
+                {
+                    //Uzun Yöntem
+                    //for (int i = 0; i < sonuc.Hatalar.Count; i++)
+                    //{
+                    //    ModelState.AddModelError("", i.ToString());
+                    //}
+
+                    // Kısa Yöntem
+                    sonuc.Hatalar.ForEach(x => ModelState.AddModelError("", x));
+                    return RedirectToAction("Login");
+                }
+            }
             return View(model);
         }
     }

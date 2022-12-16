@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Makale_Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -40,6 +41,14 @@ namespace Makale_DataAccessLayer
         public int Insert(T nesne)
         {
             _objectset.Add(nesne);
+            EntitiesBase obj = nesne as EntitiesBase;
+            DateTime zaman = DateTime.Now;
+            if (nesne is EntitiesBase)
+            {
+                obj.KayitTarihi = zaman;
+                obj.DegistirmeTarihi = zaman;
+                obj.DegistirenKullanici = "system";
+            }
             return db.SaveChanges();
         }
 
@@ -49,8 +58,14 @@ namespace Makale_DataAccessLayer
             return db.SaveChanges();
         }
 
-        public int Update()
+        public int Update(T nesne)
         {
+            EntitiesBase obj = nesne as EntitiesBase;
+            if (nesne is EntitiesBase)
+            {
+                obj.DegistirmeTarihi = DateTime.Now;
+                obj.DegistirenKullanici = "system";
+            }
             return db.SaveChanges();
         }
     }
