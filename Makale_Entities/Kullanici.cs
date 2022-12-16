@@ -15,7 +15,7 @@ namespace Makale_Entities
         [StringLength(20)]
         public string Ad { get; set; }
 
-        [StringLength(20)]
+        [StringLength(20)]   
         public string Soyad { get; set; }
 
         [Required, StringLength(20)]
