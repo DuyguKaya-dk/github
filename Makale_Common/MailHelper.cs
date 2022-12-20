@@ -14,7 +14,6 @@ namespace Makale_Common
         {
             return SendMail(body, new List<string> { to }, subject, isHtml);
         }
-
         public static bool SendMail(string body, List<string> to, string subject, bool isHtml = true)
         {
             bool result = false;
@@ -51,7 +50,6 @@ namespace Makale_Common
             {
 
             }
-
             return result;
         }
     }

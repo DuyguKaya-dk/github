@@ -122,6 +122,22 @@ namespace Makale_BusinessLayer
             }
             return sonuc;
         }
+        public BusinessLayerSonuc<Kullanici> KullaniciSil(int ıd)
+        {
+            BusinessLayerSonuc<Kullanici> sonuc = new BusinessLayerSonuc<Kullanici>();
+            sonuc.nesne = rep_kul.Find(x => x.Id == ıd);
+            if (sonuc.nesne!=null)
+            {
+                int silsonuc=rep_kul.Delete(sonuc.nesne);
+                if (silsonuc < 1)
+                    sonuc.Hatalar.Add("Kullanıcı silinemedi");
+            }
+            else
+            {
+                sonuc.Hatalar.Add("Kullanıcı bulunamadı");
+            }
+            return sonuc;
+        }
     }
 }
 
