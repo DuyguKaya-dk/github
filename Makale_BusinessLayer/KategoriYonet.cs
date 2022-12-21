@@ -16,25 +16,79 @@ namespace Makale_BusinessLayer
         {
             return rep_kat.Liste();
         }
-
         public Kategori KategoriBul(int id)
         {
             return rep_kat.Find(x => x.Id == id);
         }
 
-        public void KategoriEkle(Kategori kategori)
+        BusinessLayerSonuc<Kategori> sonuc = new BusinessLayerSonuc<Kategori>();
+        public BusinessLayerSonuc<Kategori> KategoriEkle (Kategori kategori)
         {
-            throw new NotImplementedException();
+            sonuc.nesne = rep_kat.Find(x => x.Baslik == kategori.Baslik);
+            if (sonuc.nesne!=null)
+            {
+                sonuc.Hatalar.Add("Bu kategori kayıtlı");
+            }
+            else
+            {
+                int kayit = rep_kat.Insert(kategori);
+                if (kayit<1)
+                {
+                    sonuc.Hatalar.Add("Kategori kaydedilemedi.");
+                }
+            }
+            return sonuc;
         }
-
-        public void KategoriUpdate(Kategori kategori)
+        public BusinessLayerSonuc<Kategori> KategoriUpdate(Kategori kategori)
         {
-            throw new NotImplementedException();
+            sonuc.nesne = rep_kat.Find(x => x.Id == kategori.Id);
+            if (sonuc.nesne!=null)
+            {
+                sonuc.nesne.Baslik = kategori.Baslik;
+                sonuc.nesne.Aciklama = kategori.Aciklama;
+                int updatesonuc = rep_kat.Update(sonuc.nesne);
+                if (updatesonuc<1)
+                {
+                    sonuc.Hatalar.Add("Kategori bilgileri değiştirilmedi.");
+                }
+            }
+            return sonuc;
         }
-
-        public void KategoriSil(Kategori kategori)
+        public BusinessLayerSonuc<Kategori> KategoriSil(Kategori kategori)
         {
-            throw new NotImplementedException();
+            BusinessLayerSonuc<Kategori> sonuc = new BusinessLayerSonuc<Kategori>();
+            sonuc.nesne = rep_kat.Find(x => x.Id == kategori.Id);
+
+            Repository<Not> rep_not = new Repository<Not>();
+            Repository<Yorum> rep_yorum = new Repository<Yorum>();
+            Repository<Begeni> rep_begeni = new Repository<Begeni>();
+
+            if (sonuc.Hatalar.Count > 0)
+            {
+                foreach (Not not in sonuc.nesne.Notlar)
+                {
+                    foreach (Yorum yorum in not.Yorumlar)
+                    {
+                        //Yorumlar silinecek
+                        rep_yorum.Delete(yorum);
+                    }
+                    foreach (Begeni begen in not.Begeniler)
+                    {
+                        //beğeniler silinecek
+                        rep_begeni.Delete(begen);
+                    }
+                    //notlar silinecek
+                    rep_not.Delete(not);
+                }
+                int silsonuc = rep_kat.Delete(sonuc.nesne); //kategori siliniyor
+                if (silsonuc < 1)
+                    sonuc.Hatalar.Add("Kullanıcı silinemedi");
+            }
+            else
+            {
+                sonuc.Hatalar.Add("Kullanıcı bulunamadı");
+            }
+            return sonuc;
         }
     }
 }

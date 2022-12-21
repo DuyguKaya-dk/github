@@ -13,6 +13,10 @@ namespace Makale_BusinessLayer
     public class KullaniciYonet
     {
         Repository<Kullanici> rep_kul = new Repository<Kullanici>();
+        public List<Kullanici> Listele()
+        {
+            return rep_kul.Liste();
+        }
         public BusinessLayerSonuc<Kullanici> ActivateUser(Guid id)
         {
             BusinessLayerSonuc<Kullanici> sonuc = new BusinessLayerSonuc<Kullanici>();
@@ -33,6 +37,17 @@ namespace Makale_BusinessLayer
             }
             return sonuc;
         }
+
+        public Kullanici KullaniciBul(int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void KUllaniciKaydet(Kullanici kullanici)
+        {
+            throw new NotImplementedException();
+        }
+
         public BusinessLayerSonuc<Kullanici> Kaydet(KayitModel model)
         {
             BusinessLayerSonuc<Kullanici> sonuc = new BusinessLayerSonuc<Kullanici>();
@@ -93,18 +108,26 @@ namespace Makale_BusinessLayer
         public BusinessLayerSonuc<Kullanici> KullaniciUpdate(Kullanici kullanici)
         {
             BusinessLayerSonuc<Kullanici> sonuc = new BusinessLayerSonuc<Kullanici>();
-            Kullanici k = rep_kul.Find(x => x.KullaniciAdi == kullanici.KullaniciAdi || x.Email == kullanici.Email);
+            Kullanici k1 = rep_kul.Find(x => x.KullaniciAdi == kullanici.KullaniciAdi);
+            Kullanici k2 = rep_kul.Find(x => x.Email== kullanici.Email);
 
-            if (k != null && k.Id != kullanici.Id)
+            if (k1 != null && k1.Id != kullanici.Id)
             {
-                if (k.KullaniciAdi == kullanici.KullaniciAdi)
+                if (k1.KullaniciAdi == kullanici.KullaniciAdi)
                 {
                     sonuc.Hatalar.Add("Kullanıcı adı sistemde kayıtlı");
                 }
-                if (k.Email == kullanici.Email)
+            }
+            if (k2 != null && k2.Id != kullanici.Id)
+            {
+                if (k2.Email == kullanici.Email)
                 {
                     sonuc.Hatalar.Add("Email sistemde kayıtlı");
                 }
+            }
+            if (sonuc.Hatalar.Count>0)
+            {
+                sonuc.nesne = kullanici;
                 return sonuc;
             }
             sonuc.nesne = rep_kul.Find(x => x.Id == kullanici.Id);
