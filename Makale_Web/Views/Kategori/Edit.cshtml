@@ -39,7 +39,9 @@
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input type="submit" value="Kaydet" class="btn btn-success" />
-                        <a href="/Kategori/Index" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span>Listeye Dön</a>
+                        @*<a href="/Kategori/Index" class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span>Listeye Dön</a>*@
+                        @BootstrapHelper.Button("submit", "Listeye Dön", "warning", "floppy-disk")
+                        @*@BootstrapHelper.Linkbuton("/Kategori/Index", "warning", string.Empty, "", "Listeye Dön")*@
                     </div>
                 </div>
             </div>
