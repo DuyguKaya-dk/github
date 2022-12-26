@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -8,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Makale_BusinessLayer;
 using Makale_Entities;
-
+using Makale_Web.Models;
 
 namespace Makale_Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Makale_Web.Controllers
     {
         NotYonet ny = new NotYonet();
         KategoriYonet ky = new KategoriYonet();
+
         public ActionResult Index()
         {
             var nots = ny.ListeleQueryable().Include(n => n.Kategori).Include(k => k.Kullanici);
@@ -52,7 +54,7 @@ namespace Makale_Web.Controllers
         }
         public ActionResult Create()
         {
-            ViewBag.KategoriId = new SelectList(ky.Listele(), "Id", "Baslik");
+            ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik");
             return View();
         }
         [HttpPost]
@@ -65,7 +67,7 @@ namespace Makale_Web.Controllers
                 kullanici = (Kullanici)Session["login"];
             }
             not.Kullanici = kullanici;
-            ViewBag.KategoriId = new SelectList(ky.Listele(), "Id", "Baslik", not.KategoriId);
+            ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik", not.KategoriId);
             ModelState.Remove("DegistirenKullanici");
             if (ModelState.IsValid)
             {
@@ -77,7 +79,7 @@ namespace Makale_Web.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewBag.KategoriId = new SelectList(ky.Listele(), "Id", "Baslik", not.KategoriId);
+            ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik", not.KategoriId);
             return View(not);
         }
         public ActionResult Edit(int? id)
@@ -91,14 +93,14 @@ namespace Makale_Web.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.KategoriId = new SelectList(ky.Listele(), "Id", "Baslik", not.KategoriId);
+            ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik", not.KategoriId);
             return View(not);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Not not)
         {
-            ViewBag.KategoriId = new SelectList(ky.Listele(), "Id", "Baslik", not.KategoriId);
+            ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik", not.KategoriId);
             ModelState.Remove("DegistirenKullanici");
             if (ModelState.IsValid)
             {

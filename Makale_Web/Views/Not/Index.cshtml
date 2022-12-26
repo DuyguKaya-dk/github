@@ -4,11 +4,20 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <h2>Notlar</h2>
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        <p>
+            <a href="/Not/Create" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span>Yeni Kayıt</a>
+        </p>
+    </div>
+</div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -72,9 +81,9 @@
                 @Html.DisplayFor(modelItem => item.DegistirenKullanici)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @BootstrapHelper.Linkbuton("/Not/Edit" + item.Id, "warning", "btn-sm", "edit", "")
+                @BootstrapHelper.Linkbuton("/Not/Details" + item.Id, "info", "btn-sm", "search", "")
+                @BootstrapHelper.Linkbuton("/Not/Delete" + item.Id, "danger", "btn-sm", "trash", "")
             </td>
         </tr>
     }

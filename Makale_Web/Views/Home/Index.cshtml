@@ -75,7 +75,7 @@
                             <hr />
                             <div class="ratings">
                                 <p class="pull-right">
-                                    <button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-comment"></span>  Yorumlar</button>
+                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#modal1" data-notid="@item.Id"><span class="glyphicon glyphicon-comment"></span>  Yorumlar</button>
                                 </p>
                                 <p>
                                     <button class="btn btn-default btn-xs"> <span class="glyphicon glyphicon-heart text-danger"></span>@item.BegeniSayisi</button>
@@ -93,3 +93,19 @@
     @Html.Partial("_PartialPageFooter")
 
     }
+@BootstrapHelper.ModalPoppup("modal1","Yorumlar")
+
+<script>
+    $(function () {
+        $('#modal1').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);
+            var notid = button.data("notid");
+            $('#modal1_body').load("/Yorum/YorumGoster/" + notid);
+        });
+    });
+
+    function yorumupdate(mod, yorumid, yorumtext)
+    {
+
+    }
+</script>
