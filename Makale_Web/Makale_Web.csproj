@@ -120,6 +120,11 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="App_Code\BootstrapHelper.cshtml" />
+    <Content Include="Images\sevdimsenisivas.jpg" />
+    <Content Include="Images\sivasbasacikilmaz.jpg" />
+    <Content Include="Images\sivascayonemli.jpg" />
+    <Content Include="Images\sunset.jpg" />
+    <Content Include="Images\yol.jpg" />
     <Content Include="libman.json" />
     <None Include="Scripts\jquery-3.6.1.intellisense.js" />
     <Content Include="Images\7f5f72b43cfbaa8fc0ce70d228c685ed.jpg" />
