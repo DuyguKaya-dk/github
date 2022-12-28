@@ -21,23 +21,24 @@ namespace Makale_Web.Controllers
         public ActionResult Index()
         {
             var nots = ny.ListeleQueryable().Include(n => n.Kategori).Include(k => k.Kullanici);
-            if (Session["login"]!=null)
+            if (Session["login"] != null)
             {
                 Kullanici kullanici = (Kullanici)Session["login"];
-                nots = ny.ListeleQueryable().Include(n => n.Kategori).Include(k => k.Kullanici).Where(x=>x.Kullanici.Id==kullanici.Id);
+                nots = ny.ListeleQueryable().Include(n => n.Kategori).Include(k => k.Kullanici).Where(x => x.Kullanici.Id == kullanici.Id);
             }
             return View(nots.ToList());
         }
+        LikeYonet ly = new LikeYonet();
         public ActionResult Begendiklerim()
         {
-            LikeYonet ly = new LikeYonet();
+
             var nots = ny.ListeleQueryable().Include(n => n.Kategori);
             if (Session["login"] != null)
             {
                 Kullanici kullanici = (Kullanici)Session["login"];
-                nots = ly.ListeleQueryable().Include("Kullanici").Include("Not").Where(x => x.Kullanici.Id == kullanici.Id).Select(x=>x.Not).Include(k=>k.Kategori);
+                nots = ly.ListeleQueryable().Include("Kullanici").Include("Not").Where(x => x.Kullanici.Id == kullanici.Id).Select(x => x.Not).Include(k => k.Kategori);
             }
-            return View("Index",nots.ToList());
+            return View("Index", nots.ToList());
         }
         public ActionResult Details(int? id)
         {
@@ -62,7 +63,7 @@ namespace Makale_Web.Controllers
         public ActionResult Create(Not not)
         {
             Kullanici kullanici = null;
-            if (Session["login"]!=null)
+            if (Session["login"] != null)
             {
                 kullanici = (Kullanici)Session["login"];
             }
@@ -71,8 +72,8 @@ namespace Makale_Web.Controllers
             ModelState.Remove("DegistirenKullanici");
             if (ModelState.IsValid)
             {
-                BusinessLayerSonuc<Not> sonuc= ny.NotKaydet(not);
-                if (sonuc.Hatalar.Count>0)
+                BusinessLayerSonuc<Not> sonuc = ny.NotKaydet(not);
+                if (sonuc.Hatalar.Count > 0)
                 {
                     sonuc.Hatalar.ForEach(x => ModelState.AddModelError("", x));
                     return View(not);
@@ -105,7 +106,7 @@ namespace Makale_Web.Controllers
             if (ModelState.IsValid)
             {
                 BusinessLayerSonuc<Not> sonuc = ny.NotUpdate(not);
-                if (sonuc.Hatalar.Count>0)
+                if (sonuc.Hatalar.Count > 0)
                 {
                     sonuc.Hatalar.ForEach(x => ModelState.AddModelError("", x));
                     return View(not);
@@ -131,14 +132,77 @@ namespace Makale_Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Not not =ny.NotBul(id);
-            BusinessLayerSonuc<Not> sonuc= ny.NotSil(not);
-            if (sonuc.Hatalar.Count>0)
+            Not not = ny.NotBul(id);
+            BusinessLayerSonuc<Not> sonuc = ny.NotSil(not);
+            if (sonuc.Hatalar.Count > 0)
             {
                 sonuc.Hatalar.ForEach(x => ModelState.AddModelError("", x));
                 return View(not);
             }
             return RedirectToAction("Index");
+        }
+
+        public ActionResult YorumGoster(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+
+            Not not = ny.NotBul(id.Value);
+
+            return PartialView("_PartialPageYorumlar", not.Yorumlar);
+        }
+
+        [HttpPost]
+        public ActionResult GetLikes(int[] id_dizi)
+        {
+            List<int> likenot = new List<int>();
+            Kullanici kullanici = (Kullanici)Session["login"];
+
+            if (kullanici != null)
+                likenot = ly.Listele(x => x.Kullanici.Id == kullanici.Id && id_dizi.Contains(x.Not.Id)).Select(x => x.Not.Id).ToList();
+            //select not_id from begeni where kullanici_id=2 and not_id in (1,5,8,9,6)
+            return Json(new { sonuc = likenot });
+        }
+        public ActionResult SetLike(int notid,bool like)
+        {
+            int sonuc = 0;
+            Kullanici kullanici = (Kullanici)Session["login"];
+            Not not = ny.NotBul(notid);
+            Begeni begen = ly.BegeniBul(notid,kullanici.Id);
+            if (begen!=null && like==false)
+            {
+                //beğeni sil
+                sonuc=ly.BegeniSil(begen);
+            }
+            else if (begen==null && like==true)
+            {
+                //beğeni ekle
+                sonuc=ly.BegeniEkle(new Begeni() 
+                { 
+                    Kullanici=kullanici,
+                    Not=not
+                
+                });
+            }
+            if (sonuc>0)
+            {
+                if (like)
+                {
+                    not.BegeniSayisi++;
+                }
+                else
+                {
+                    not.BegeniSayisi--;
+                }
+               BusinessLayerSonuc<Not> notupdate= ny.NotUpdate(not);
+                if (notupdate.Hatalar.Count==0)
+                {
+                    return Json(new { hata = false,res= not.BegeniSayisi });
+                }
+            }
+            return Json(new { hata = true, res=not.BegeniSayisi });
         }
     }
 }

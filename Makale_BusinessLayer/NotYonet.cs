@@ -52,6 +52,8 @@ namespace Makale_BusinessLayer
                 notsonuc.nesne.Text = not.Text;
                 notsonuc.nesne.Taslak = not.Taslak;
                 notsonuc.nesne.KategoriId = not.KategoriId;
+                notsonuc.nesne.BegeniSayisi = not.BegeniSayisi;
+
                 if(rep_not.Update(notsonuc.nesne)<1)
                 {
                     notsonuc.Hatalar.Add("Kayıt güncellenemedi.");
@@ -59,7 +61,6 @@ namespace Makale_BusinessLayer
             }
             return notsonuc;
         }
-
         public BusinessLayerSonuc<Not> NotSil(Not not)
         {
             notsonuc.nesne = rep_not.Find(x => x.Id == not.Id);
