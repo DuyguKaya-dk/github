@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Makale_BusinessLayer;
 using Makale_Entities;
+using Makale_Web.Filters;
 using Makale_Web.Models;
 
 namespace Makale_Web.Controllers
@@ -18,6 +19,7 @@ namespace Makale_Web.Controllers
         NotYonet ny = new NotYonet();
         KategoriYonet ky = new KategoriYonet();
 
+        [Auth]
         public ActionResult Index()
         {
             var nots = ny.ListeleQueryable().Include(n => n.Kategori).Include(k => k.Kullanici);
@@ -29,6 +31,8 @@ namespace Makale_Web.Controllers
             return View(nots.ToList());
         }
         LikeYonet ly = new LikeYonet();
+
+        [Auth]
         public ActionResult Begendiklerim()
         {
 
@@ -40,6 +44,8 @@ namespace Makale_Web.Controllers
             }
             return View("Index", nots.ToList());
         }
+
+        [Auth]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -53,12 +59,15 @@ namespace Makale_Web.Controllers
             }
             return View(not);
         }
+
+        [Auth]
         public ActionResult Create()
         {
             ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik");
             return View();
         }
         [HttpPost]
+        [Auth]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Not not)
         {
@@ -83,6 +92,8 @@ namespace Makale_Web.Controllers
             ViewBag.KategoriId = new SelectList(CacheHelper.Kategoriler(), "Id", "Baslik", not.KategoriId);
             return View(not);
         }
+
+        [Auth]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -98,6 +109,7 @@ namespace Makale_Web.Controllers
             return View(not);
         }
         [HttpPost]
+        [Auth]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Not not)
         {
@@ -115,6 +127,8 @@ namespace Makale_Web.Controllers
             }
             return View(not);
         }
+
+        [Auth]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -129,6 +143,7 @@ namespace Makale_Web.Controllers
             return View(not);
         }
         [HttpPost, ActionName("Delete")]
+        [Auth]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -141,7 +156,7 @@ namespace Makale_Web.Controllers
             }
             return RedirectToAction("Index");
         }
-
+        [Auth]
         public ActionResult YorumGoster(int? id)
         {
             if (id == null)
@@ -155,6 +170,7 @@ namespace Makale_Web.Controllers
         }
 
         [HttpPost]
+        [Auth]
         public ActionResult GetLikes(int[] id_dizi)
         {
             List<int> likenot = new List<int>();
@@ -165,28 +181,42 @@ namespace Makale_Web.Controllers
             //select not_id from begeni where kullanici_id=2 and not_id in (1,5,8,9,6)
             return Json(new { sonuc = likenot });
         }
-        public ActionResult SetLike(int notid,bool like)
+        public ActionResult NotDetay(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+
+            Not not = ny.NotBul(id.Value);
+
+            return PartialView("_PartialPageMakaleDevam", not);
+        }
+        
+        public ActionResult SetLike(int notid, bool like)
         {
             int sonuc = 0;
             Kullanici kullanici = (Kullanici)Session["login"];
+            if (kullanici == null)
+                return Json(new { hata = true, res = -1 });
             Not not = ny.NotBul(notid);
-            Begeni begen = ly.BegeniBul(notid,kullanici.Id);
-            if (begen!=null && like==false)
+            Begeni begen = ly.BegeniBul(notid, kullanici.Id);
+            if (begen != null && like == false)
             {
                 //beğeni sil
-                sonuc=ly.BegeniSil(begen);
+                sonuc = ly.BegeniSil(begen);
             }
-            else if (begen==null && like==true)
+            else if (begen == null && like == true)
             {
                 //beğeni ekle
-                sonuc=ly.BegeniEkle(new Begeni() 
-                { 
-                    Kullanici=kullanici,
-                    Not=not
-                
+                sonuc = ly.BegeniEkle(new Begeni()
+                {
+                    Kullanici = kullanici,
+                    Not = not
+
                 });
             }
-            if (sonuc>0)
+            if (sonuc > 0)
             {
                 if (like)
                 {
@@ -196,13 +226,14 @@ namespace Makale_Web.Controllers
                 {
                     not.BegeniSayisi--;
                 }
-               BusinessLayerSonuc<Not> notupdate= ny.NotUpdate(not);
-                if (notupdate.Hatalar.Count==0)
+                BusinessLayerSonuc<Not> notupdate = ny.NotUpdate(not);
+                if (notupdate.Hatalar.Count == 0)
                 {
-                    return Json(new { hata = false,res= not.BegeniSayisi });
+                    return Json(new { hata = false, res = not.BegeniSayisi });
                 }
             }
-            return Json(new { hata = true, res=not.BegeniSayisi });
+            return Json(new { hata = true, res = not.BegeniSayisi });
+
         }
     }
 }

@@ -46,6 +46,10 @@ $(function () {
         }).done(function (data) {
             if (data.hata)
             {
+                if (data.res==-1)
+                {
+                    window.location.href = '/Home/Login';
+                }
                 alert("Beğeni işlemi gerçekleşmedi");
             }
             else

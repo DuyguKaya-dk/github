@@ -79,9 +79,9 @@
                     </td>
                     <td>
                         <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#modal1" data-notid="@item.Id"><span class="glyphicon glyphicon-comment"></span></button>
-                        @BootstrapHelper.Linkbuton("/Not/Edit" + item.Id, "warning", "btn-xs", "edit", "")
-                        @BootstrapHelper.Linkbuton("/Not/Details" + item.Id, "info", "btn-xs", "search", "")
-                        @BootstrapHelper.Linkbuton("/Not/Delete" + item.Id, "danger", "btn-xs", "trash", "")
+                        @BootstrapHelper.Linkbuton("/Not/Edit/" + item.Id, "warning", "btn-xs", "edit", "")
+                        @BootstrapHelper.Linkbuton("/Not/Details/" + item.Id, "info", "btn-xs", "search", "")
+                        @BootstrapHelper.Linkbuton("/Not/Delete/" + item.Id, "danger", "btn-xs", "trash", "")
                     </td>
                 </tr>
             }
@@ -93,4 +93,3 @@
 @BootstrapHelper.ModalPoppup("modal1", "Yorumlar")
 
 <script src="~/Scripts/JavaScriptFile.js"></script>
-<script src="~/Scripts/ScriptLike.js"></script>

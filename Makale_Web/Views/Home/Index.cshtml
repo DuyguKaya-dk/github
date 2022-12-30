@@ -66,7 +66,7 @@
                                 </h6>
                                 @if (!string.IsNullOrEmpty(item.Text) && item.Text.Length > 100)
                                 {
-                                    <p>@item.Text.Substring(0, 100)<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-book" style="color:deeppink"></span>Devamı...</a></p>
+                                    <p>@item.Text.Substring(0, 100)<a href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-book" style="color:deeppink" data-toggle="modal" data-target="#modal2" data-notid="@item.Id"></span>Devamı...</a></p>
                                 }
                                 else
                                 {
@@ -97,7 +97,18 @@
 
 }
 @BootstrapHelper.ModalPoppup("modal1", "Yorumlar")
-
+@BootstrapHelper.ModalPoppup("modal2", "NotlarDetay")
 
 <script src="~/Scripts/JavaScriptFile.js"></script>
 <script src="~/Scripts/ScriptLike.js"></script>
+
+<script>
+    var notid = -1;
+    $(function () {
+        $('#modal2').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);
+            notid = button.data("notid");
+            $('#modal2_body').load("/Not/NotDetay/" + notid);
+        });
+    });
+</script>

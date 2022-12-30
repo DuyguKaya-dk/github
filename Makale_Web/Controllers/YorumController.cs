@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Makale_Web.Filters;
 
 namespace Makale_Web.Controllers
 {
@@ -22,9 +23,10 @@ namespace Makale_Web.Controllers
             }
             
             Not not=ny.NotBul(id.Value);
-            
+
             return PartialView("_PartialPageYorumlar", not.Yorumlar);
         }
+        [Auth]
         [HttpPost]
         public ActionResult Edit(int? id,string text)
         {
@@ -44,6 +46,7 @@ namespace Makale_Web.Controllers
             }
             return Json(new { sonuc = false }, JsonRequestBehavior.AllowGet);
         }
+        [Auth]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -61,6 +64,7 @@ namespace Makale_Web.Controllers
             }
             return Json(new { sonuc = false },JsonRequestBehavior.AllowGet);
         }
+        [Auth]
         [HttpPost]
         public ActionResult Create(Yorum yorum,int? notid)
         {
